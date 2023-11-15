@@ -1,0 +1,356 @@
+			Lab - OS
+		LOG DE MODIFICAÇÕES
+
+
+***************************************************************
+*             Em 04-07-2021: Versão 1.0.0                     *
+***************************************************************
+1) Concluído o desenvolvimento da interface do HPET.
+
+
+***************************************************************
+*             Em 05-07-2021: Versão 1.0.0                     *
+***************************************************************
+2) Criei constantes para os números identificadores dos Timer's 
+3) Criei constantes para os IRQ's do Timer's 0 e 1, no Legacy 
+mode
+4) Alterei a nomenclatura das constantes de IRQ's do APIC/IOAPIC
+
+***************************************************************
+*             Em 06-07-2021: Versão 1.0.0                     *
+***************************************************************
+
+1) Ajustei a função de configuração dos Timer's, modificando 
+sua denominação para "hpet_config_timer_periodic" e corrigindo 
+um erro, pois o main couter não estava sendo zerado e isso com-
+rometia a precisão da contagem periódica.
+
+2) Criei a função static inline bool is_enable_timer_global(void)
+para verificar se o hpet está ativo;
+
+3) Antes de configurar qualquer Timer no modo "periodic", será ne-
+cessário desativar o Timer Global, usando "hpet_stop). Finalizada 
+a configuração, o Timer Global deve ser reativado, usando 
+"hpet_start".
+
+4) Modifiquei o nomes das funções de tempo usando o HPET para que 
+iniciem todas com hpet_
+ 
+5) Criei funções adicionais para lidar com cricossegundos e 
+millissegundos:
+uint64_t hpet_counter_time_milli(void);
+uint64_t hpet_counter_time_micro(void);
+void hpet_sleep_milli_sec(uint64_t time_ms);
+void hpet_sleep_micro_sec(uint64_t time_us);
+
+6) Reorganizei o arquivo fonte hpet.c para transferir todas as 
+estruturas,constantes e enumerações para o arquivo de cabeçalho 
+hpet.h.
+
+7) Crie protótipos das funções static no cabeçalho, para uma melhor 
+visualização e organização de todas elas.
+
+***************************************************************
+*             Em 07-07-2021: Versão 1.0.0                     *
+***************************************************************
+1) Corrigi o problema no HPET - Timer periodic, que gerava a 
+primeira interrupção com um valor residual. Passei a zerar o re-
+gistro do comparator antes de atribuir o valor a ser utilizado
+como frequência.
+
+***************************************************************
+*             Em 10-07-2021: Versão 1.0.0                     *
+***************************************************************
+1) Fiz correções nas rotinas de parse da ACPI;
+2) Criei rotinas para realização de parse das tabelas PMTT, e
+descobri que o ACPI não as estava mapeando;
+3) Modifiquei as rotinas do scheduler, criando a rotina
+scheduler_init() e scheduler_exec();
+4) Fiz uma limpeza nos diretórios do OS-Lab e Operating Systems
+para excluir arquivos temporário, lixo e código duplicado.
+
+
+***************************************************************
+*             Em 11-07-2021: Versão 1.0.0                     *
+***************************************************************
+1) Criei a função physical_memory_map(void), que faz o mapeamen-
+to da memória física, identificando as áres livres e aquelas u-
+tilizadas pelo BIOS;
+
+***************************************************************
+*             Em 04-05-2022: Versão 1.0.0                     *
+***************************************************************
+1) modifiquei a função physical_memory_map(void) para fazer o
+preenchimento da estrutura mmap_regions, com as informações de
+memória fornecidas pelo bootloader;
+2)Criei a função show_physical_memory_map(void) para listar as
+informações de memória a partir da estrutura mmap_regions;
+3) modifiquei a função remap_kernel(void) para poder informar
+por meio da macro REMAP_MEMORIA_SIZE a quantidade de memória
+que deve ser remapeada, controlando inclusive o número de 
+entries necessárias. Para isso, criei a função 
+size_t entries_by_pagetable(size_t mem_size, char page_no). 
+4) criei as macros auxiliares para utilizares a função 
+entries_by_pagetable():
+	entries_on_p4(size), 
+	entries_on_p3(size)
+	entries_on_p2(size)
+	entries_on_p1(size)
+
+***************************************************************
+*             Em 01-08-2022: Versão 1.0.0                     *
+***************************************************************
+1) modificada a denominação de algumas rotinas
+2) criada e colocada em execução a função bootmem_limits(),
+que extrai/calcula as propriedades da memória e insere na estru-
+tura mmap_region_t;
+
+próximo: continuar a configuração da setup_mm(void).
+
+***************************************************************
+*             Em 02-08-2022: Versão 1.0.0                     *
+***************************************************************
+1) Fiz mais ajustes nos arquivos, excluíndo variáveis e constan-
+teste desnecessárias;
+2) Fiz ajustes na rotina de mapeamento virtual para que funcio-
+nasce com VM_BASE (0xFFFF800000000000UL);
+3) Fiz uma cópia das rotinas para o fonte v_area.c, utilizando
+o vetor de struct page. 
+4) austei a denominação e estrutura da estrutura vm_area para
+que se possa indicar como será o mapeamento e alocão da área
+física: contínua e ou de forma fragmentada, indicando apenas
+a zona.
+5) fiz alguns ajustes nas rotinas do heap, modificando o arquivo
+fonte kheap.c.
+
+6) fiz ajustes no arquivo mm.h para organizar as informações
+e modifiquei a denominação de algumas funções utilitárias.
+
+Continuar os testes e modificações nas rotinas do heap.
+
+***************************************************************
+*             Em 03-08-2022: Versão 1.0.0                     *
+***************************************************************
+a) modifiquei os membros de struct headHeap;
+b) perdi muito tempo com um erro que estava acontecendo com
+as rotinas do vm_area, até descobrir que eu estava utilizando
+o alloc_bootmem(), que já havia sido substituido pelo paging. 
+Muito tempo perdito.
+c) fiz muitos ajustes nas rotinas do heap e também no respectivo
+buddy alocator. Devo continuar para aprimora-las.
+d) Fontes alterados:
+mm_heap.c, mm_heaph, kmalloc.c, kmalloc.h,vm_area.c
+vmm_area.h, mm_types.h, bootmem.c
+
+***************************************************************
+*             Em 04-08-2022: Versão 1.0.0                     *
+***************************************************************
+a) Realizados novos aprimoramentos nas rotinas relacionadas à
+memória heap, inclusive as rotinas do buddy em kmalloc.c;
+b) alterada a estrutura struct mm_heap.
+c) modificada a denominação de vários objetos, estruturas e va-
+riáveis;
+d) criado rotinas para expandir a heap, por pageframes;
+e) fiz ajustes nas rotinas buddy do kmalloc.c
+
+***************************************************************
+*             Em 05-08-2022: Versão 1.0.0                     *
+***************************************************************
+a) feitos diversos ajustes nas rotinas da memória heap, inclu-
+sive nas rotinas do algorítmo buddy. O algorítimo possuía alguns
+bugs que foram solucionados.
+b) o cálculo da memória free do heap não estava correta e possía
+um erro que foi corrigido.
+c) criei a rotina bck_buddy_ok(freeHead_t *bck) para fazer
+a verificação do buddy e os limites da memória alocada.
+
+***************************************************************
+*             Em 06-08-2022: Versão 1.0.0                     *
+***************************************************************
+a) criei um header chamado tlb.h, com as funções relacionadas;
+b) fiz ajustes na rotina de reinserção de blocos do buddy.c, que
+manipula os struct page;
+b) alterei o elemento vm_area->vm_end para vm_area->pend;
+c) transformei as constantes indicadoras dos ID das zonas na 
+estrutura enum e_zone_id;
+d) alterie a denominação das funções utilitárias para mani-
+pular os flags do struct page.
+
+***************************************************************
+*             Em 06-08-2022: Versão 1.0.0                     *
+***************************************************************
+a) mudança na estrutura struct pglist_data(node);
+b) organização da arvore de arquivos do OS-Lab;
+c) fiz mudanças na denominação da rotinas de inicialização da
+memória;
+d) fiz limpeza no código para retirar trechos comentados;
+e) mudei a ordem de chamada da configuração das zonas;
+f) modifiquei a sequência de setup da memória, fazendo a inicia
+lização das zonas e inclusão dos pages nas listas free do
+buddy em cada zona após a conclusão do preenchimento do
+global mem_map;
+g) fiz diversas alterações na denominação das rotinas de zona
+e criei novas rotinas para modificar os elementos de cada zona;
+
+***************************************************************
+*             Em 17-09-2022: Versão 1.0.0                     *
+***************************************************************
+
+a) crie um novo alias para os tipos uint64_t->u64_t e uint32_t->
+u32_t
+b) alterei a denominação das rotinas de init_bootmem e transferi
+uma parte da atribuição de propriedas do struct page para a
+rotina free_area_init(), para concentrar a manipulação dos 
+pages em um local apenas.
+c) desloquei também alguns objetos do header ktype.h para outros
+arquivos, visto que não tinham relação com tipos genéricos;
+d) modifiquei completamente as rotinas de criação de área virtual
+em bootmem e vm_area.
+
+***************************************************************
+*             Em 27-11-2022: Versão 1.0.0                     *
+***************************************************************
+(*) Obs. A mudanças descritas aqui se referem aos últimos 10/15
+dias, compreendendo o período de férias.
+1) Ajustes nas rotinas do IOAPIC para organizar o redireciona-
+mento dos IRQ/IRS;
+2) Ajustes nas rotinas de interrupção e exceção, com a sua se-
+paração em arquivos diferentes, além de ajustes finos;
+3) Conclusão das rotinas do trampoline, com a ativação de um 
+dos núcleos e sua suspensão no real-mode;
+4) Ativação do modo gráfico e ajuste das rotinas de gerencia-
+mento do modo gráfico;
+5) Melhoras e correções no shell, para separar o tratamento do
+modo gráfico e modo texto.
+6) Desenvolvimento das rotinas de escaneamento do PCI e estudo
+das rotinas e práticas para gerenciar os devices.
+
+***************************************************************
+*             Em 01-12-2022: Versão 1.0.0                     *
+***************************************************************
+1) Separei as rotinas do trampoline das rotinas de trampoline
+utilizadas na ativação do módo de vídeo gráfico, por meio do 
+VBE;
+
+2) Criei rotinas no próprio código de ativação do VBE para fa-
+zer a leitura das estruturas de dados, que não precisam mais
+ficar numa posição fixa do código;
+
+3) Melhorei as rotinas de mapeamento de memória, que estavam 
+ignorando os flags de proteção que eram passados para os pages;
+
+4) Tive muitos problemas em fazer o trampoline ativar correta-
+mente os APs, pois sempre apresentavam erros e inconsistências 
+quanto se tentava entrar no long mode; Perdi 2 dias e meio 
+tentando descobrir a causa. Descobri que havia vários erros, e
+um dos mais importantes era o mapeamento do código do trampoline,
+que precisa ficar mapeamento-idêntico(identity-mapped): endereço
+virtual==endereço físico. Observei também que estava fazendo a
+atribuição da GDR no momento errado.
+
+***************************************************************
+*             Em 03-12-2022: Versão 1.0.0                     *
+***************************************************************
+a) Fiz ajustes nas rotinas do shell.
+
+***************************************************************
+*             Em 04-12-2022: Versão 1.0.0                     *
+***************************************************************
+a) fiz vários ajustes nas rotinas do apic, reorganizando o có-
+digo e modificando a denominação de constantes. Criei algumas
+rotinas de testes. Todas as modificações foram frutos do estu-
+do que venho fazendo do manual da INTEL;
+
+***************************************************************
+*             Em 22-12-2022: Versão 1.0.0                     *
+***************************************************************
+a) Fiz uma revisão nas rotinas de mapeamento de memória, por 
+conta de erros que estavam ocorrendo quando mudava para o modo
+gráfico;
+b) corrigir um problema quando se mudava para o modo gráfico.
+Há um delay na mudança e se fizermos o mapeamento da memória
+e limpeza antes de finalizado a mudança, ocorrem muitos erros
+aleatório. Criei um atributo que deve ser consultado para se
+saber se a mudança foi concluída no trampoline;
+c) fiz mudanças na estrutura Task e nas rotinas do scheduler. 
+Ainda é preciso concluir as modificações;
+
+***************************************************************
+*             Em 27-12-2022: Versão 1.0.0                     *
+***************************************************************
+a) Fiz inúmeras correções no código e melhorias;
+b) eliminei o erro que acontecia no mapeamento de memória.
+c) modifiquei o mapeamento de área no bootmem para que os
+espaço de memória física para o kernel e memmap fosse contínuo.
+Isso eliminou as mensagens de erro nos mapemantos posteriores;
+d) fiz melhorias nas rotinas do ACPI;
+e) o mapeamento de memória se tornou mais consistente;
+f) criei uma rotina para fazer o desmapeamento de memória.
+g) melhorei e generalizei as rotinas de memória;
+
+***************************************************************
+*             Em 15-01-2023: Versão 1.0.0                     *
+***************************************************************
+a) Fiz melhoria nas rotinas do SMP. Hoje temos um core ativado.
+É preciso refinar a configuração e incorporar ao scheduler;
+
+***************************************************************
+*             Em 12-02-2023: Versão 1.0.0                     *
+***************************************************************
+a) Separei as rotinas de scheduler do task;
+b) Reorganizei os arquivos de header e código em subpastas;
+c) Sincronizei as rotinas do sistema, que estavam levando a 
+comportamentos irregulares;
+d) Criei uma rotina para threads, com passagem de parâmetros;
+e) Revisei todas as rotinas do task e do scheduler;
+f) corrigi erros no hpet e no keyboard, que geravam um consu-
+mo muito grande de ciclos de CPU. Criei duas constantes que 
+inserem códigos assembly(pause e hlt) inline;
+g) conclui a ativação dos cores para o SMP, com execução 
+independente já funcionando;
+h) aprendi muito sobre a arquitetura do x86_64;
+
+***************************************************************
+*             Em 12-03-2023: Versão 1.0.0                     *
+***************************************************************
+a) fiz diversos testes nas rotinas do syscall/sysret e descobri
+que o NASM não codifica corretamente o SYSRET. É preciso inserir 
+o opcode diretamente no código. O GLIDIX tem ótimo exemplo de uso.
+b) É preciso criar uma rotina de criação de processos de usuários.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
