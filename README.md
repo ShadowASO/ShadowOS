@@ -15,12 +15,12 @@ com rapidez na compreensão desse nincho da ciência da computação.
 
 ## Implementado:
 
-* Gerenciador de memória física
-* Gerenciador de memória virtual
-* Memória heap
-* ACPI
-* APIC
-*IOAPIC
+- Gerenciador de memória física
+- Gerenciador de memória virtual
+- Memória heap
++ ACPI
++ APIC
++ IOAPIC
 *Gerenciamento do Timer
 *keyboard
 *VESA
