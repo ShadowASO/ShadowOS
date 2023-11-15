@@ -39,12 +39,13 @@ preensão desse nincho da ciência da computação.
 ## A implementar:
 O kernel ainda precisa de muitas melhorias e ajustes, e realizar isso ajudará na compreensão dos
 conceitos de sistemas operacionais, arquitetura do x86_64
--Um fileSystem 
+
++ Um fileSystem 
 
 ## PRÉ-REQUISITOS:
--GCC 13.2.0 ou superior
--NASM 2.16.01
--qemu-system-x86_64
++ GCC 13.2.0 ou superior
++ NASM 2.16.01
++ qemu-system-x86_64
 
 ## Como executar:
 Faça o download do source code e, após restaurá-los em seu computador,  dentro da pasta principal(ShadowOS),
