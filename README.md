@@ -45,11 +45,9 @@ preensão desse nincho da ciência da computação.
 -qemu-system-x86_64
 
 ## Como executar:
-Fazer o download do fonte e restaurá-lo em sua máquina de uso.
+Faça o download do source code e, após restaurá-los em seu computador,  dentro da pasta principal(ShadowOS),
+execute o seguinte comando:
+
 $ make run - Faz a compilação e executa o kernel, utilizando QEMU
 
-Pre-requisitos:
-
--Sugiro o uso do VSCode como editor
--qemu-system-x86_64
 
