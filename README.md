@@ -1,16 +1,22 @@
 # ShadowOS
-Shadow é um kernel de 64-bit SMP para a arquitetura x86_64.
+ShadowOS é um kernel de 64-bit com capacidade SMP para a arquitetura x86_64.
 
-Ele é o produto de muito estudo e consultas realizadas principalmente em
-fontes produzidas em língua inglesa. 
+Ele é o produto de muita pesquisa realizada em outros kernels e o estudo 
+teórico nas obras disponíveis, em sua maioria escritos em língua inglesa.
 
-Nasminhas consultas, observei que a quase totalidade de projetos disponí-
-veis estão documentados por falantes da língua portuguesa. Os poucos pro-
-jetos brasileiros encontrados eram de hobby kernels muito primários. 
+Nas pesquisas e consultas realizadas, observei que a quase totalidade dos
+projetos disponíveis estão documentados na língua inglesa, o que dificulta
+a compreensão daqueles que não dominal a língua universa da tecnologia. Os 
+poucos projetos brasileiros que encontrei iniciavam e morriam ainda no es-
+tágio embrionário.
 
-O OS-Lab(ShadowOS) está longe de completo, mas possui a estrutura básica 
-que todo estudante de sistemas operacionais precisaria ter para avançar 
-com rapidez na compreensão desse nincho da ciência da computação.
+O OS-Lab(ShadowOS) está longe de completo, mas possui muitos recursos que 
+são encontrados nos kernels disponíveis na internet, salvo o linux, cuja 
+complexidade inviabiliza a compreensão. 
+
+Este código, que procurei documentar onde possível, pode ser o trampolim
+para todo estudante de sistemas operacionais avançar com rapidez na com-
+preensão desse nincho da ciência da computação.
 
 
 ## Implementado:
