@@ -22,13 +22,13 @@ com rapidez na compreensão desse nincho da ciência da computação.
 + APIC
 + IOAPIC
 - Gerenciamento do Timer
--keyboard
--VESA
--SMP - Ativação de até 4 cores
--Syscall
--Task/Process
--Scheduler
--Shell
+- keyboard
+- VESA
+- SMP - Ativação de até 4 cores
+- Syscall
+- Task/Process
+- Scheduler
+- Shell
 
 ## A implementar:
 -Um fileSystem 
