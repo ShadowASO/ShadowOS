@@ -15,13 +15,10 @@ com rapidez na compreensão desse nincho da ciência da computação.
 
 Implementado:
 
-.Gerenciador de memória física
-
-.Gerenciador de memória virtual
-
-.Memória heap
-
-.ACPI
+Gerenciador de memória física
+Gerenciador de memória virtual
+Memória heap
+ACPI
 
 -APIC
 
