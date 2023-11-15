@@ -13,7 +13,7 @@ que todo estudante de sistemas operacionais precisaria ter para avançar
 com rapidez na compreensão desse nincho da ciência da computação.
 
 
-Implementado:
+## Implementado:
 
 Gerenciador de memória física
 Gerenciador de memória virtual
@@ -30,15 +30,15 @@ Task/Process
 Scheduler
 Shell
 
-A implementar:
+## A implementar:
 -Um fileSystem 
 
-PRÉ-REQUISITOS:
+## PRÉ-REQUISITOS:
 -GCC 13.2.0 ou superior
 -NASM 2.16.01
 -qemu-system-x86_64
 
-Como executar:
+## Como executar:
 Fazer o download do fonte e restaurá-lo em sua máquina de uso.
 $ make run - Faz a compilação e executa o kernel, utilizando QEMU
 
