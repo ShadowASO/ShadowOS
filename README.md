@@ -43,6 +43,7 @@ conceitos de sistemas operacionais, arquitetura do x86_64
 + Um fileSystem 
 
 ## PRÉ-REQUISITOS:
+
 + GCC 13.2.0 ou superior
 + NASM 2.16.01
 + qemu-system-x86_64
