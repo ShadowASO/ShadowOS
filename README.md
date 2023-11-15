@@ -37,6 +37,8 @@ preensão desse nincho da ciência da computação.
 + Shell
 
 ## A implementar:
+O kernel ainda precisa de muitas melhorias e ajustes, e realizar isso ajudará na compreensão dos
+conceitos de sistemas operacionais, arquitetura do x86_64
 -Um fileSystem 
 
 ## PRÉ-REQUISITOS:
