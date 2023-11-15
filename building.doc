@@ -1,0 +1,10 @@
+ nasm -f elf32 loader.s
+ ld -T link.ld -melf_i386 loader.o -o kernel.elf
+ 
+ mkdir -p iso/boot/grub
+ cp kernel.elf iso/boot/
+ grub-mkrescue -o os.iso iso
+  
+ bochs -f bochsrc.txt -q
+  
+ 
