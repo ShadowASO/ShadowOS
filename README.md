@@ -1,5 +1,13 @@
 # ShadowOS
-Sistema Operacional em 64 bits desenvolvido para aplicação de conceitos e técnicas de programação utilizadas no desenvolvimento de sistemas operacionais. 
+Shadow é um kernel de 64-bit SMP for the PC architecture x86_64.
+
+Ele é o produto de muito estudo realizado em fontes em língua inglesa. Nas
+minhas consultas, observei a quase ausência de projetos elaborados por fa-
+lantes da língua portuguesa. Os poucos projetos encontrados eram de hobby
+kernels muito primários. O OS-Lab(ShadowOS) está longe de completo, mas
+possui a estrutura básica que todo estudante de sistemas operacionais pre-
+cisaria ter para avançar com rapidez na compreensão desse nincho da ciên-
+cia da computação.
 
 
 Implementado:
