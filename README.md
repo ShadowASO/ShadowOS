@@ -2,10 +2,10 @@
 Sistema Operacional em 64 bits desenvolvido para aplicação de conceitos e técnicas de programação utilizadas no desenvolvimento de sistemas operacionais. 
 
 Implementado:
--Gerenciador de memória física;
--Gerenciador de memória virtual;
--Memória heap;
--ACPI
+.Gerenciador de memória física
+.Gerenciador de memória virtual
+.Memória heap
+.ACPI
 -APIC
 -IOAPIC
 -Gerenciamento do Timer
