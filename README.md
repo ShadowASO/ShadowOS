@@ -33,6 +33,15 @@ Shell
 A implementar:
 -Um fileSystem 
 
+PRÉ-REQUISITOS:
+-GCC 13.2.0 ou superior
+-NASM 2.16.01
+-qemu-system-x86_64
+
+Como executar:
+Fazer o download do fonte e restaurá-lo em sua máquina de uso.
+$ make run - Faz a compilação e executa o kernel, utilizando QEMU
+
 Pre-requisitos:
 
 -Sugiro o uso do VSCode como editor
