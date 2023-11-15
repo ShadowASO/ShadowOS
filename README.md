@@ -1,6 +1,7 @@
 # ShadowOS
 Sistema Operacional em 64 bits desenvolvido para aplicação de conceitos e técnicas de programação utilizadas no desenvolvimento de sistemas operacionais. 
 
+
 Implementado:
 
 .Gerenciador de memória física
