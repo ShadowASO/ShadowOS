@@ -19,25 +19,16 @@ Gerenciador de memória física
 Gerenciador de memória virtual
 Memória heap
 ACPI
-
--APIC
-
--IOAPIC
-
--Gerenciamento do Timer
-
--keyboard
-
--VESA
-
--SMP - Ativação de até 4 cores
-
--Syscall
-
--Task/Process
-
--Scheduler
--Shell;
+APIC
+IOAPIC
+Gerenciamento do Timer
+keyboard
+VESA
+SMP - Ativação de até 4 cores
+Syscall
+Task/Process
+Scheduler
+Shell
 
 A implementar:
 -Um fileSystem 
