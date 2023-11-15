@@ -1,0 +1,226 @@
+/*--------------------------------------------------------------------------
+*  File name:  vga.c
+*  Author:  Aldenor Sombra de Oliveira
+*  Data de criação: 14-11-2022
+*--------------------------------------------------------------------------
+Rotinas para manipulação de vídeo svga
+--------------------------------------------------------------------------*/
+#include "../include/libc/stdint.h"
+#include "../include/libc/stddef.h"
+#include "../include/libc/stdbool.h"
+
+#include "vga.h"
+#include "io.h"
+#include "pixmap.h"
+#include "font.h"
+#include "mm/pgtable_types.h"
+#include "mm/vmm.h"
+#include "../IO/pci.h"
+#include "../graphic/pixmap.h"
+#include "ktypes.h"
+#include "mm/fixmap.h"
+#include "mm/mm_utils.h"
+#include "../drivers/graphic/console.h"
+#include "vesa.h"
+
+unsigned char g_640x480x16[] =
+    {
+        /* MISC */
+        0xE3,
+        /* SEQ */
+        0x03, 0x01, 0x08, 0x00, 0x06,
+        /* CRTC */
+        0x5F, 0x4F, 0x50, 0x82, 0x54, 0x80, 0x0B, 0x3E,
+        0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0xEA, 0x0C, 0xDF, 0x28, 0x00, 0xE7, 0x04, 0xE3,
+        0xFF,
+        /* GC */
+        0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x05, 0x0F,
+        0xFF,
+        /* AC */
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x14, 0x07,
+        0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
+        0x01, 0x00, 0x0F, 0x00, 0x00};
+
+unsigned char g_320x200x256[] =
+    {
+        /* MISC */
+        0x63,
+        /* SEQ */
+        0x03, 0x01, 0x0F, 0x00, 0x0E,
+        /* CRTC */
+        0x5F, 0x4F, 0x50, 0x82, 0x54, 0x80, 0xBF, 0x1F,
+        0x00, 0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x9C, 0x0E, 0x8F, 0x28, 0x40, 0x96, 0xB9, 0xA3,
+        0xFF,
+        /* GC */
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x05, 0x0F,
+        0xFF,
+        /* AC */
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+        0x41, 0x00, 0x0F, 0x00, 0x00};
+
+unsigned char g_320x200x256_modex[] =
+    {
+        /* MISC */
+        0x63,
+        /* SEQ */
+        0x03, 0x01, 0x0F, 0x00, 0x06,
+        /* CRTC */
+        0x5F, 0x4F, 0x50, 0x82, 0x54, 0x80, 0xBF, 0x1F,
+        0x00, 0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x9C, 0x0E, 0x8F, 0x28, 0x00, 0x96, 0xB9, 0xE3,
+        0xFF,
+        /* GC */
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x05, 0x0F,
+        0xFF,
+        /* AC */
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+        0x41, 0x00, 0x0F, 0x00, 0x00};
+
+unsigned char g_320x240x256_modex[] =
+    {
+        /* MISC */
+        0x63,
+        /* SEQ */
+        0x03, 0x01, 0x0F, 0x00, 0x06,
+        /* CRTC */
+        0x5F, 0x4F, 0x50, 0x82, 0x54, 0x80, 0x0D, 0x3E,
+        0x00, 0x41, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0xEA, 0xAC, 0xDF, 0x28, 0x00, 0xE7, 0x06, 0xE3,
+        0xFF,
+        /* GC */
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x05, 0x0F,
+        0xFF,
+        /* AC */
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+        0x41, 0x00, 0x0F, 0x00, 0x00};
+
+unsigned char _mode13h_320x200x256[] = {
+    /* general registers */
+    0x63, 0, 0x70, 0x4,
+    /* sequencer */
+    0x3, 0x1, 0xF, 0, 0xE,
+    /* CRTC */
+    0x5F, 0x4F, 0x50, 0x82, 0x24, 0x80, 0xBF, 0x1F, 0, 0x41,
+    0, 0, 0, 0, 0, 0x31, 0x9C, 0x8E, 0x8F, 0x28, 0x40, 0x96, 0x89, 0xA3, 0xFF,
+    /* graphics */
+    0, 0, 0, 0, 0, 0x40, 0x5, 0xF, 0xFF,
+    /* attribute */
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF, 0x41, 0, 0xF, 0, 0};
+
+void write_regs(unsigned char *regs)
+{
+    unsigned i;
+    kprintf("\nEntrei");
+    u8_t col = 0;
+
+    if (regs == g_320x200x256)
+    {
+        kprintf("\nEntrei");
+        video_xres = 320;
+        video_yres = 200;
+        col = 1;
+    }
+    else if (regs == g_640x480x16)
+    {
+        video_xres = 640;
+        video_yres = 480;
+        col = 1;
+    }
+    else if (regs == g_320x200x256_modex)
+    {
+        video_xres = 320;
+        video_yres = 200;
+        col = 1;
+    }
+    else if (regs == g_320x240x256_modex)
+    {
+        video_xres = 320;
+        video_yres = 240;
+        col = 1;
+    }
+    else if (regs == _mode13h_320x200x256)
+    {
+        video_xres = 320;
+        video_yres = 200;
+        col = 1;
+    }
+
+    // map_video_mem(video_xres, video_yres, 4, 0);
+    set_pixmap_root_attribs(video_xres, video_yres, video_buffer);
+    set_graphic_mode(true);
+    // return;
+
+    /* write MISCELLANEOUS reg */
+    __write_portb(VGA_MIS_W, *regs);
+    regs++;
+
+    /* write SEQUENCER regs */
+    for (i = 0; i < VGA_SEQ_MAX; i++)
+    {
+        __write_portb(VGA_SEQ_I, i);
+        __write_portb(VGA_SEQ_D, *regs);
+        regs++;
+    }
+
+    /* unlock CRTC registers */
+    __write_portb(VGA_CRT_IC, 0x03);
+    __write_portb(VGA_CRT_DC, __read_portb(VGA_CRT_DC) | 0x80);
+    __write_portb(VGA_CRT_IC, 0x11);
+    __write_portb(VGA_CRT_DC, __read_portb(VGA_CRT_DC) & ~0x80);
+
+    /* make sure they remain unlocked */
+    regs[0x03] |= 0x80;
+    regs[0x11] &= ~0x80;
+
+    /* write CRTC regs */
+    for (i = 0; i < VGA_CRT_MAX; i++)
+    {
+        __write_portb(VGA_CRT_IC, i);
+        __write_portb(VGA_CRT_DC, *regs);
+        regs++;
+    }
+
+    /* write GRAPHICS CONTROLLER regs */
+    for (i = 0; i < VGA_GRA_MAX; i++)
+    {
+        __write_portb(VGA_GRA_I, i);
+        __write_portb(VGA_GRA_D, *regs);
+        regs++;
+    }
+
+    /* write ATTRIBUTE CONTROLLER regs */
+    for (i = 0; i < VGA_ATT_MAX; i++)
+    {
+        (void)__read_portb(VGA_IS1_RC);
+        __write_portb(VGA_ATT_IW, i);
+        __write_portb(VGA_ATT_IW, *regs);
+        regs++;
+    }
+    /* lock 16-color palette and unblank display */
+    (void)__read_portb(VGA_IS1_RC);
+    __write_portb(VGA_ATT_IW, 0x20);
+}
+
+/* palette VGA */
+static void
+vgaSetPalette(int index, int r, int g, int b)
+{
+    __write_portb(0x3C8, index);
+    __write_portb(0x3C9, r);
+    __write_portb(0x3C9, g);
+    __write_portb(0x3C9, b);
+}
+
+void setdefaultVGApalette(void)
+{
+    for (int index = 0; index < 256; index++)
+    {
+        int value = fontdata[index];
+        vgaSetPalette(index, (value >> 18) & 0x3f, (value >> 10) & 0x3f, (value >> 2) & 0x3f);
+    }
+}
