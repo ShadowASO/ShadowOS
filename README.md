@@ -11,8 +11,7 @@ poucos projetos brasileiros que encontrei iniciavam e morriam ainda no es-
 tágio embrionário.
 
 O OS-Lab(ShadowOS) está longe de completo, mas possui muitos recursos que 
-são encontrados nos kernels disponíveis na internet, salvo o linux, cuja 
-complexidade inviabiliza a compreensão. 
+são encontrados nos kernels disponíveis na internet.
 
 Este código, que procurei documentar onde possível, pode ser o trampolim
 para todo estudante de sistemas operacionais avançar com rapidez na com-
